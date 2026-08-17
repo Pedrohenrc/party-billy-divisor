@@ -4,7 +4,7 @@ interface ItemCardProps {
     price: number;
 }
 
-export default function ItemCard(props: ItemCardProps) {
+export default function ProductCard(props: ItemCardProps) {
 
     return (
         <div>
