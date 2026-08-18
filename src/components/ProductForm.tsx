@@ -2,9 +2,13 @@ import Button from "./Button.tsx";
 import {useState} from "react";
 import type {Product} from "../types/product.ts";
 import {getNextId} from "../utils/utils.ts";
+import * as React from "react";
 
+export interface ProductFormProps {
+    onProductCreated: () => void;
 
-export default function ProductForm() {
+}
+export default function ProductForm(props: ProductFormProps) {
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState(0);
@@ -15,13 +19,24 @@ export default function ProductForm() {
         price: price,
     }
 
+    function handleSubmit(e: React.SubmitEvent) {
+        e.preventDefault();
+
+        localStorage.setItem(`product${product.id}`, JSON.stringify(product));
+
+        setName("");
+        setPrice(0);
+        props.onProductCreated();
+
+    }
+
     return (
 
-        <form onSubmit={() => localStorage.setItem(`product${product.id}`, JSON.stringify(product))}>
+        <form onSubmit={handleSubmit}>
             <h1>Cadastrar Item</h1>
             <input onChange={(e) => setName(e.target.value)} placeholder='Digite o nome do produto' type="text"/>
             <input onChange={(e) => setPrice(Number(e.target.value))} placeholder='Digite o valor do produto' type="number"/>
-            <Button text='Cadastrar produto'/>
+            <Button text='Cadastrar produto' type={'submit'} />
         </form>
 
     );
