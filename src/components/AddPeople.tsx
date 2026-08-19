@@ -53,32 +53,37 @@ export default function AddPeople(props: AddPeopleProps) {
     }
 
     return (
-        <div>
+        <div className="panel add-people">
             <h2>Adicionar pessoas</h2>
 
-            {props.persons.map((person) => (
-                <label key={person.id}>
-                    <input
-                        type="checkbox"
-                        checked={selectedPeople.includes(person.id)}
-                        onChange={() => togglePerson(person.id)}
-                    />
+            <div className="add-people-options">
+                {props.persons.map((person) => (
+                    <label key={person.id}>
+                        <input
+                            type="checkbox"
+                            checked={selectedPeople.includes(person.id)}
+                            onChange={() => togglePerson(person.id)}
+                        />
 
-                    {person.name}
-                </label>
-            ))}
+                        {person.name}
+                    </label>
+                ))}
+            </div>
 
-            <Button
-                text="Adicionar"
-                type={'button'}
-                onClick={handleAddPeople}
-            />
+            <div className="add-people-actions">
+                <Button
+                    text="Adicionar"
+                    type={'button'}
+                    onClick={handleAddPeople}
+                />
 
-            <Button
-                text="Cancelar"
-                type={'button'}
-                onClick={props.onClose}
-            />
+                <Button
+                    text="Cancelar"
+                    type={'button'}
+                    variant={'secondary'}
+                    onClick={props.onClose}
+                />
+            </div>
         </div>
     );
 }

@@ -22,8 +22,8 @@ export default function ProductCard(props: ProductCardProps) {
     );
 
     return (
-        <div>
-            <h1>{props.name}</h1>
+        <div className="card">
+            <h3>{props.name}</h3>
             <p>Valor: {props.price}R$</p>
 
             <p>
@@ -33,18 +33,20 @@ export default function ProductCard(props: ProductCardProps) {
                     : "Nenhum"}
             </p>
 
-            <Button
-                text={'Adicionar pessoas'}
-                type={'button'}
-                onClick={() => props.onAddPeople(props.id)}
-            />
+            <div className="card-actions">
+                <Button
+                    text={'Adicionar pessoas'}
+                    type={'button'}
+                    onClick={() => props.onAddPeople(props.id)}
+                />
 
-            <Button
-                text={'Remover'}
-                type={'button'}
-                onClick={() => props.onRemove(props.id)}
-            />
-
+                <Button
+                    text={'Remover'}
+                    type={'button'}
+                    variant={'secondary'}
+                    onClick={() => props.onRemove(props.id)}
+                />
+            </div>
         </div>
     )
 

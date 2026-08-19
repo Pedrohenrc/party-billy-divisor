@@ -30,8 +30,8 @@ export default function PersonForm(props: PersonFormProps) {
 
     return (
 
-        <form onSubmit={handleSubmit}>
-            <h1>Cadastrar Pessoa</h1>
+        <form className="form" onSubmit={handleSubmit}>
+            <h3>Cadastrar Pessoa</h3>
             <input onChange={(e) => setName(e.target.value)}
                    placeholder='Digite o nome'
                    type="text"/>

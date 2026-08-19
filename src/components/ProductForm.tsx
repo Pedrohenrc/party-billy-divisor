@@ -32,8 +32,8 @@ export default function ProductForm(props: ProductFormProps) {
 
     return (
 
-        <form onSubmit={handleSubmit}>
-            <h1>Cadastrar Item</h1>
+        <form className="form" onSubmit={handleSubmit}>
+            <h3>Cadastrar Item</h3>
             <input onChange={(e) => setName(e.target.value)} placeholder='Digite o nome do produto' type="text"/>
             <input onChange={(e) => setPrice(Number(e.target.value))} placeholder='Digite o valor do produto' type="number"/>
             <Button text='Cadastrar produto' type={'submit'} />

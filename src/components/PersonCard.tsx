@@ -22,8 +22,8 @@ export default function PersonCard (props: PersonCardProps) {
 
     return (
 
-        <div>
-            <h1>{props.name}</h1>
+        <div className="card">
+            <h3>{props.name}</h3>
 
             <p>
                 Produtos:{" "}
@@ -32,11 +32,14 @@ export default function PersonCard (props: PersonCardProps) {
                     : "Nenhum"}
             </p>
 
-            <Button
-                text={'Remover'}
-                type={'button'}
-                onClick={() => props.onRemove(props.id)}
-            />
+            <div className="card-actions">
+                <Button
+                    text={'Remover'}
+                    type={'button'}
+                    variant={'secondary'}
+                    onClick={() => props.onRemove(props.id)}
+                />
+            </div>
         </div>
 
     );
