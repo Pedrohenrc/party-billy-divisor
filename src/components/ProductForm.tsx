@@ -13,14 +13,18 @@ export default function ProductForm(props: ProductFormProps) {
     const [name, setName] = useState("");
     const [price, setPrice] = useState(0);
 
-    const product: Product = {
-        id: getNextId('product'),
-        name: name,
-        price: price,
-    }
-
     function handleSubmit(e: React.SubmitEvent) {
         e.preventDefault();
+
+        if (!name.trim() || price <= 0) {
+            return;
+        }
+
+        const product: Product = {
+            id: getNextId('product'),
+            name: name.trim(),
+            price: price,
+        }
 
         localStorage.setItem(`product${product.id}`, JSON.stringify(product));
 
@@ -34,8 +38,8 @@ export default function ProductForm(props: ProductFormProps) {
 
         <form className="form" onSubmit={handleSubmit}>
             <h3>Cadastrar Item</h3>
-            <input onChange={(e) => setName(e.target.value)} placeholder='Digite o nome do produto' type="text"/>
-            <input onChange={(e) => setPrice(Number(e.target.value))} placeholder='Digite o valor do produto' type="number"/>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder='Digite o nome do produto' type="text"/>
+            <input value={price === 0 ? "" : price} onChange={(e) => setPrice(Number(e.target.value))} placeholder='Digite o valor do produto' type="number"/>
             <Button text='Cadastrar produto' type={'submit'} />
         </form>
 
