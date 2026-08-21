@@ -1,3 +1,8 @@
+import type { Person } from "../types/person.ts";
+import type { Product } from "../types/product.ts";
+import type { PersonProduct } from "../types/personProduct.ts";
+import type { PersonSplit, PersonSplitItem, SplitResult } from "../types/split.ts";
+
 export function getNextId(prefix: string): number {
     const keys = Object.keys(localStorage).filter(key => {
         const id = key.replace(prefix, "");
@@ -36,11 +41,6 @@ export function getAllByPrefix<T>(prefix: string): T[] {
 
     return list;
 }
-
-import type { Person } from "../types/person.ts";
-import type { Product } from "../types/product.ts";
-import type { PersonProduct } from "../types/personProduct.ts";
-import type { PersonSplit, PersonSplitItem, SplitResult } from "../types/split.ts";
 
 export function loadPersons(): Person[] {
     return getAllByPrefix<Person>("person");
