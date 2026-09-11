@@ -6,7 +6,6 @@ import ProductForm from "./components/ProductForm.tsx";
 import ProductCard from "./components/ProductCard.tsx";
 import type { Product } from "./types/product.ts";
 import { useEffect, useState } from "react";
-import AddPeople from "./components/AddPeople.tsx";
 import BillSplit from "./components/BillSplit.tsx";
 import type { PersonProduct } from "./types/personProduct.ts";
 import {
@@ -95,8 +94,15 @@ function App() {
                                 price={product.price}
                                 persons={persons}
                                 personsProducts={personProducts}
-                                onAddPeople={() => {
-                                    setSelectedProductId(product.id);
+                                isAddingPeople={selectedProductId === product.id}
+                                onToggleAddPeople={(productId) => {
+                                    setSelectedProductId((current) =>
+                                        current === productId ? null : productId
+                                    );
+                                }}
+                                onCloseAddPeople={() => setSelectedProductId(null)}
+                                onRelationsChanged={() => {
+                                    setPersonProducts(loadPersonProducts());
                                 }}
                                 onRemove={handleRemoveProduct}
                             />
@@ -104,18 +110,6 @@ function App() {
                     </div>
                 </section>
             </div>
-
-            {selectedProductId !== null && (
-                <AddPeople
-                    productId={selectedProductId}
-                    persons={persons}
-                    personProducts={personProducts}
-                    onClose={() => setSelectedProductId(null)}
-                    onRelationsChanged={() => {
-                        setPersonProducts(loadPersonProducts());
-                    }}
-                />
-            )}
 
             <section className="panel">
                 <BillSplit

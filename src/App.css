@@ -57,22 +57,60 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
   padding: 14px 16px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--code-bg);
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: var(--accent-border);
 }
 
 .card p {
   font-size: 14px;
 }
 
+.card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.card-participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-participants-empty {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.chip {
+  font-size: 13px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 2px;
 }
 
 .form {
@@ -139,13 +177,39 @@
 }
 
 .add-people {
-  margin-top: -16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.add-people h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.add-people-select-all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
 }
 
 .add-people-options {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
 }
 
 .add-people-options label {
@@ -153,6 +217,11 @@
   align-items: center;
   gap: 8px;
   font-size: 15px;
+}
+
+.add-people-empty {
+  font-size: 13px;
+  color: var(--text);
 }
 
 .add-people-actions {

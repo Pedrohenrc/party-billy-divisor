@@ -25,12 +25,15 @@ export default function PersonCard (props: PersonCardProps) {
         <div className="card">
             <h3>{props.name}</h3>
 
-            <p>
-                Produtos:{" "}
-                {relatedProducts.length > 0
-                    ? relatedProducts.map((product) => product.name).join(", ")
-                    : "Nenhum"}
-            </p>
+            <div className="card-participants">
+                {relatedProducts.length > 0 ? (
+                    relatedProducts.map((product) => (
+                        <span className="chip" key={product.id}>{product.name}</span>
+                    ))
+                ) : (
+                    <span className="card-participants-empty">Nenhum produto</span>
+                )}
+            </div>
 
             <div className="card-actions">
                 <Button

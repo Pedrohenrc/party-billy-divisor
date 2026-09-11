@@ -19,6 +19,9 @@ export default function AddPeople(props: AddPeopleProps) {
 
     const [selectedPeople, setSelectedPeople] = useState<number[]>(initialSelected);
 
+    const allSelected = props.persons.length > 0 &&
+        selectedPeople.length === props.persons.length;
+
     function togglePerson(personId: number) {
         setSelectedPeople((current) => {
             if (current.includes(personId)) {
@@ -27,6 +30,14 @@ export default function AddPeople(props: AddPeopleProps) {
 
             return [...current, personId];
         });
+    }
+
+    function toggleAll() {
+        setSelectedPeople((current) =>
+            current.length === props.persons.length
+                ? []
+                : props.persons.map((person) => person.id)
+        );
     }
 
     function handleAddPeople() {
@@ -53,10 +64,28 @@ export default function AddPeople(props: AddPeopleProps) {
     }
 
     return (
-        <div className="panel add-people">
-            <h2>Adicionar pessoas</h2>
+        <div className="add-people">
+            <h4>Adicionar pessoas</h4>
+
+            {props.persons.length > 0 && (
+                <label className="add-people-select-all">
+                    <input
+                        type="checkbox"
+                        checked={allSelected}
+                        onChange={toggleAll}
+                    />
+
+                    Selecionar todos
+                </label>
+            )}
 
             <div className="add-people-options">
+                {props.persons.length === 0 && (
+                    <p className="add-people-empty">
+                        Cadastre pessoas para poder vinculá-las ao produto.
+                    </p>
+                )}
+
                 {props.persons.map((person) => (
                     <label key={person.id}>
                         <input

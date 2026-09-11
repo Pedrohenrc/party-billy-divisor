@@ -3,6 +3,17 @@ import type { Product } from "../types/product.ts";
 import type { PersonProduct } from "../types/personProduct.ts";
 import type { PersonSplit, PersonSplitItem, SplitResult } from "../types/split.ts";
 
+export function parseMoneyInput(value: string): number {
+    const normalized = value.replace(",", ".").replace(/[^0-9.]/g, "");
+    const parsed = Number(normalized);
+
+    return isNaN(parsed) ? 0 : parsed;
+}
+
+export function formatMoney(value: number): string {
+    return value.toFixed(2).replace(".", ",");
+}
+
 export function getNextId(prefix: string): number {
     const keys = Object.keys(localStorage).filter(key => {
         const id = key.replace(prefix, "");

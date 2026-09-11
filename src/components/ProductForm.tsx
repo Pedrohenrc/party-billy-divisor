@@ -1,7 +1,7 @@
 import Button from "./Button.tsx";
 import {useState} from "react";
 import type {Product} from "../types/product.ts";
-import {getNextId} from "../utils/utils.ts";
+import {getNextId, parseMoneyInput} from "../utils/utils.ts";
 import * as React from "react";
 
 export interface ProductFormProps {
@@ -11,10 +11,20 @@ export interface ProductFormProps {
 export default function ProductForm(props: ProductFormProps) {
 
     const [name, setName] = useState("");
-    const [price, setPrice] = useState(0);
+    const [priceInput, setPriceInput] = useState("");
+
+    function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const value = e.target.value;
+
+        if (/^[0-9]*[.,]?[0-9]*$/.test(value)) {
+            setPriceInput(value);
+        }
+    }
 
     function handleSubmit(e: React.SubmitEvent) {
         e.preventDefault();
+
+        const price = parseMoneyInput(priceInput);
 
         if (!name.trim() || price <= 0) {
             return;
@@ -29,7 +39,7 @@ export default function ProductForm(props: ProductFormProps) {
         localStorage.setItem(`product${product.id}`, JSON.stringify(product));
 
         setName("");
-        setPrice(0);
+        setPriceInput("");
         props.onProductCreated();
 
     }
@@ -39,7 +49,13 @@ export default function ProductForm(props: ProductFormProps) {
         <form className="form" onSubmit={handleSubmit}>
             <h3>Cadastrar Item</h3>
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder='Digite o nome do produto' type="text"/>
-            <input value={price === 0 ? "" : price} onChange={(e) => setPrice(Number(e.target.value))} placeholder='Digite o valor do produto' type="number"/>
+            <input
+                value={priceInput}
+                onChange={handlePriceChange}
+                placeholder='Digite o valor do produto (ex: 12,50)'
+                type="text"
+                inputMode="decimal"
+            />
             <Button text='Cadastrar produto' type={'submit'} />
         </form>
 
