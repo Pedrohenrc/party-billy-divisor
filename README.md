@@ -1,77 +1,80 @@
-# React + TypeScript + Vite
+# Billy · Divisor de Contas
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend do Billy: cadastre pessoas e itens, veja quanto cada um deve e salve a
+conta na API para acompanhar quem já pagou.
 
-Currently, two official plugins are available:
+- Backend: https://github.com/SIXBRO-CORPORATION/party-billy-divisor-backend
+- API em produção: https://billy-divisor.onrender.com (docs em `/docs`)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+React 19 + TypeScript + Vite, React Router, cookies para o token (`js-cookie`)
+e um `http-client` próprio em cima do `fetch`.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Rodando localmente
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+cp .env.example .env   # ajuste a URL da API se necessário
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+A API espera o frontend em `http://localhost:5173` (origem liberada no CORS).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Variáveis de ambiente
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variável       | Descrição                                        |
+| -------------- | ------------------------------------------------ |
+| `VITE_API_URL` | URL base da API, **incluindo** o prefixo `/api`. |
+
+Sem `.env`, o app usa `https://billy-divisor.onrender.com/api`.
+
+## Estrutura
 
 ```
+src/
+├── components/
+│   ├── app/        # shell da aplicação e guards de rota
+│   ├── bill/       # formulários e cards da conta
+│   └── ui/         # Button, Input, Loading, Modal, Toast
+├── hooks/          # useAuth, useToast, useBills, useBillDraft
+├── pages/          # Login, Register, Bills, NewBill, BillDetail
+├── providers/      # AuthProvider, ToastProvider e seus contexts
+├── services/       # auth.service, bill.service (chamadas à API)
+├── types/          # contratos da API + tipos do rascunho local
+└── utils/          # http-client, token-manager, helpers, draft-storage
+```
+
+### Camadas
+
+- `utils/http-client.ts` — wrapper do `fetch`: injeta `Authorization: Bearer`,
+  desembrulha o envelope `ApiResponse`, dispara toast de erro/sucesso e, em
+  `401`, limpa o token e devolve a sessão para o login.
+- `utils/token-manager.ts` — guarda o `access_token` em cookie, respeitando o
+  `expires_at` devolvido pelo login.
+- `services/*.service.ts` — uma função por endpoint, devolvendo já o `data`.
+- `hooks/*` — estado de tela (carregando, erro, refetch) em cima dos services.
+
+## Fluxo
+
+1. **Login/registro** (`/login`, `/register`) — `POST /auth/register` seguido de
+   `POST /auth/login`; o token vai para o cookie e `GET /auth/me` valida a
+   sessão nos próximos acessos.
+2. **Nova conta** (`/bills/new`) — o rascunho (pessoas, itens, vínculos) fica no
+   `localStorage` e mostra uma prévia da divisão calculada com a mesma regra do
+   backend (sobra de centavos para o primeiro participante). Ao salvar, vira um
+   `POST /bills` com `participant_names` por item.
+3. **Minhas contas** (`/`) — `GET /bills`, com progresso de pagamento por conta.
+4. **Detalhe** (`/bills/:billId`) — `GET /bills/{id}` e
+   `PATCH /bills/{id}/participants/{id}/payment` para marcar quem já pagou.
+
+## Scripts
+
+| Script          | O que faz                        |
+| --------------- | -------------------------------- |
+| `npm run dev`   | Servidor de desenvolvimento      |
+| `npm run build` | Typecheck (`tsc -b`) + build     |
+| `npm run lint`  | ESLint                           |
+
+> Deploy em host estático: o app é uma SPA, então todas as rotas precisam cair
+> em `index.html` (já existe um `public/_redirects` para Render/Netlify).

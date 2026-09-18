@@ -1,7 +1,8 @@
 export interface PersonSplitItem {
     productId: number;
     productName: string;
-    productPrice: number;
+    productTotal: number;
+    quantity: number;
     participantsCount: number;
     shareValue: number;
 }

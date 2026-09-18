@@ -1,22 +1,31 @@
 :root {
-  --text: #6b6375;
+  --text: #5c5566;
   --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
+  --text-soft: #8b849a;
+  --bg: #faf9fb;
+  --surface: #ffffff;
+  --surface-2: #f4f3f7;
+  --border: #e6e4ea;
   --accent: #aa3bff;
+  --accent-strong: #8d18ec;
+  --accent-contrast: #ffffff;
   --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --accent-border: rgba(170, 59, 255, 0.45);
+  --success: #17a673;
+  --success-bg: rgba(23, 166, 115, 0.12);
+  --warning: #c98a04;
+  --warning-bg: rgba(201, 138, 4, 0.12);
+  --danger: #e0435b;
+  --danger-bg: rgba(224, 67, 91, 0.12);
+  --shadow-sm: rgba(8, 6, 13, 0.06) 0 1px 2px, rgba(8, 6, 13, 0.04) 0 2px 8px;
+  --shadow-lg: rgba(8, 6, 13, 0.12) 0 12px 32px -8px, rgba(8, 6, 13, 0.06) 0 4px 12px -4px;
+  --radius: 12px;
+  --radius-sm: 8px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 16px/150% var(--sans);
   color-scheme: light dark;
   color: var(--text);
   background: var(--bg);
@@ -24,94 +33,90 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
+    --text: #a09bab;
+    --text-h: #f4f3f6;
+    --text-soft: #7c7689;
+    --bg: #101015;
+    --surface: #17171e;
+    --surface-2: #1e1e27;
+    --border: #2b2b36;
     --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+    --accent-strong: #a855f7;
+    --accent-contrast: #16111f;
+    --accent-bg: rgba(192, 132, 252, 0.14);
+    --accent-border: rgba(192, 132, 252, 0.45);
+    --success: #36d399;
+    --success-bg: rgba(54, 211, 153, 0.14);
+    --warning: #eab308;
+    --warning-bg: rgba(234, 179, 8, 0.14);
+    --danger: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.14);
+    --shadow-sm: rgba(0, 0, 0, 0.4) 0 1px 2px, rgba(0, 0, 0, 0.3) 0 2px 8px;
+    --shadow-lg: rgba(0, 0, 0, 0.55) 0 12px 32px -8px, rgba(0, 0, 0, 0.4) 0 4px 12px -4px;
   }
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+* {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  min-height: 100svh;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1,
 h2,
 h3 {
-  font-family: var(--heading);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-h);
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+  font-size: 30px;
+  line-height: 120%;
 }
+
 h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
+  font-size: 18px;
 }
+
 h3 {
-  font-size: 17px;
-  line-height: 130%;
-  margin: 0;
+  font-size: 16px;
 }
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+a {
+  color: var(--accent-strong);
+  text-decoration: none;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+a:hover {
+  text-decoration: underline;
+}
+
+ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+@media (max-width: 720px) {
+  h1 {
+    font-size: 24px;
+  }
 }

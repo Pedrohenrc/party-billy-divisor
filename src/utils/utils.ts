@@ -1,7 +1,6 @@
-import type { Person } from "../types/person.ts";
-import type { Product } from "../types/product.ts";
-import type { PersonProduct } from "../types/personProduct.ts";
+import type { BillDraft } from "../types/draft.ts";
 import type { PersonSplit, PersonSplitItem, SplitResult } from "../types/split.ts";
+import type { CreateBillRequest } from "../types/bill.ts";
 
 export function parseMoneyInput(value: string): number {
     const normalized = value.replace(",", ".").replace(/[^0-9.]/g, "");
@@ -14,89 +13,63 @@ export function formatMoney(value: number): string {
     return value.toFixed(2).replace(".", ",");
 }
 
-export function getNextId(prefix: string): number {
-    const keys = Object.keys(localStorage).filter(key => {
-        const id = key.replace(prefix, "");
-        return key.startsWith(prefix) && !isNaN(Number(id));
+/** A API devolve valores monetários como string decimal ("42.50"). */
+export function formatAmount(value: string | number): string {
+    const parsed = typeof value === "number" ? value : Number(value);
+
+    return formatMoney(isNaN(parsed) ? 0 : parsed);
+}
+
+export function formatDate(value?: string | null): string {
+    if (!value) {
+        return "";
+    }
+
+    const parsed = new Date(value);
+
+    if (isNaN(parsed.getTime())) {
+        return "";
+    }
+
+    return parsed.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
     });
-
-    let maxId = 0;
-
-    for (const key of keys) {
-        const id = Number(key.replace(prefix, ""));
-
-        if (id > maxId) {
-            maxId = id;
-        }
-    }
-
-    return maxId + 1;
 }
 
-export function getAllByPrefix<T>(prefix: string): T[] {
-    const list: T[] = [];
-
-    for (const key of Object.keys(localStorage)) {
-        const id = key.replace(prefix, "");
-
-        if (!key.startsWith(prefix) || isNaN(Number(id))) {
-            continue;
-        }
-
-        const item = localStorage.getItem(key);
-
-        if (item) {
-            list.push(JSON.parse(item) as T);
-        }
-    }
-
-    return list;
-}
-
-export function loadPersons(): Person[] {
-    return getAllByPrefix<Person>("person");
-}
-
-export function loadProducts(): Product[] {
-    return getAllByPrefix<Product>("product");
-}
-
-export function loadPersonProducts(): PersonProduct[] {
-    return JSON.parse(
-        localStorage.getItem("personProducts") || "[]"
-    );
-}
-
-export function removePerson(personId: number): PersonProduct[] {
-    localStorage.removeItem(`person${personId}`);
-
-    const relations = loadPersonProducts();
-
-    const updatedRelations = relations.filter(
-        relation => relation.personId !== personId
-    );
-
-    localStorage.setItem(
-        "personProducts",
-        JSON.stringify(updatedRelations)
-    );
-
-    return updatedRelations;
-}
-
-function roundMoney(value: number): number {
+export function roundMoney(value: number): number {
     return Math.round(value * 100) / 100;
 }
 
-export function calculateBillSplit(
-    persons: Person[],
-    products: Product[],
-    personProducts: PersonProduct[]
-): SplitResult {
+export function getNextId(items: { id: number }[]): number {
+    return items.reduce((maxId, item) => Math.max(maxId, item.id), 0) + 1;
+}
 
-    const missingProducts = products
+/**
+ * Divide um total em N partes iguais em centavos, jogando o resto na
+ * primeira parte — mesma regra do BillSplitCalculator do backend, para
+ * que a prévia local seja igual ao que a API vai calcular.
+ */
+export function splitEvenly(total: number, participantsCount: number): number[] {
+    if (participantsCount <= 0) {
+        return [];
+    }
+
+    const totalInCents = Math.round(total * 100);
+    const baseInCents = Math.floor(totalInCents / participantsCount);
+
+    const splits = new Array(participantsCount).fill(baseInCents);
+
+    splits[0] += totalInCents - baseInCents * participantsCount;
+
+    return splits.map((cents) => cents / 100);
+}
+
+export function calculateBillSplit(draft: BillDraft): SplitResult {
+    const missingProducts = draft.products
         .filter((product) =>
-            !personProducts.some((relation) => relation.productId === product.id)
+            !draft.relations.some((relation) => relation.productId === product.id)
         )
         .map((product) => product.name);
 
@@ -107,63 +80,64 @@ export function calculateBillSplit(
         };
     }
 
-    const splits: PersonSplit[] = persons.map((person) => {
-        const items: PersonSplitItem[] = products
-            .filter((product) =>
-                personProducts.some((relation) =>
-                    relation.productId === product.id && relation.personId === person.id
-                )
-            )
-            .map((product) => {
-                const participantsCount = personProducts.filter(
-                    (relation) => relation.productId === product.id
-                ).length;
+    const shareByPerson = new Map<number, PersonSplitItem[]>();
 
-                return {
-                    productId: product.id,
-                    productName: product.name,
-                    productPrice: product.price,
-                    participantsCount,
-                    shareValue: roundMoney(product.price / participantsCount),
-                };
+    for (const product of draft.products) {
+        const participantIds = draft.relations
+            .filter((relation) => relation.productId === product.id)
+            .map((relation) => relation.personId);
+
+        const productTotal = roundMoney(product.unitPrice * product.quantity);
+        const shares = splitEvenly(productTotal, participantIds.length);
+
+        participantIds.forEach((personId, index) => {
+            const items = shareByPerson.get(personId) ?? [];
+
+            items.push({
+                productId: product.id,
+                productName: product.name,
+                productTotal,
+                quantity: product.quantity,
+                participantsCount: participantIds.length,
+                shareValue: shares[index],
             });
 
-        const total = roundMoney(
-            items.reduce((sum, item) => sum + item.shareValue, 0)
-        );
+            shareByPerson.set(personId, items);
+        });
+    }
+
+    const splits: PersonSplit[] = draft.persons.map((person) => {
+        const items = shareByPerson.get(person.id) ?? [];
 
         return {
             personId: person.id,
             personName: person.name,
             items,
-            total,
+            total: roundMoney(items.reduce((sum, item) => sum + item.shareValue, 0)),
         };
     });
-
-    const totalBill = roundMoney(
-        splits.reduce((sum, split) => sum + split.total, 0)
-    );
 
     return {
         success: true,
         splits,
-        totalBill,
+        totalBill: roundMoney(splits.reduce((sum, split) => sum + split.total, 0)),
     };
 }
 
-export function removeProduct(productId: number): PersonProduct[] {
-    localStorage.removeItem(`product${productId}`);
-
-    const relations = loadPersonProducts();
-
-    const updatedRelations = relations.filter(
-        relation => relation.productId !== productId
-    );
-
-    localStorage.setItem(
-        "personProducts",
-        JSON.stringify(updatedRelations)
-    );
-
-    return updatedRelations;
+/** Converte o rascunho local no payload de POST /bills. */
+export function draftToCreateBillRequest(draft: BillDraft): CreateBillRequest {
+    return {
+        title: draft.title.trim(),
+        products: draft.products.map((product) => ({
+            name: product.name,
+            quantity: product.quantity,
+            unit_price: product.unitPrice,
+            participant_names: draft.relations
+                .filter((relation) => relation.productId === product.id)
+                .map((relation) =>
+                    draft.persons.find((person) => person.id === relation.personId)?.name ?? ""
+                )
+                .filter((name) => name.length > 0),
+        })),
+    };
 }
