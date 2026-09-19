@@ -37,7 +37,6 @@ export default function LoginPage() {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-brand">
-                    <span className="brand-mark">B</span>
                     <h1>Billy</h1>
                     <p>Divida a conta, acompanhe quem já pagou.</p>
                 </div>

@@ -18,7 +18,6 @@ export function Layout() {
         <div className="app-shell">
             <header className="app-topbar">
                 <Link className="brand" to="/">
-                    <span className="brand-mark">B</span>
                     <span className="brand-name">Billy</span>
                 </Link>
 
