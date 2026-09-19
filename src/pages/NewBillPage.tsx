@@ -4,14 +4,12 @@ import PersonForm from '../components/bill/PersonForm.tsx';
 import PersonCard from '../components/bill/PersonCard.tsx';
 import ProductCard from '../components/bill/ProductCard.tsx';
 import ProductForm from '../components/bill/ProductForm.tsx';
-import { ShareButton } from '../components/bill/ShareButton.tsx';
 import SplitPreview from '../components/bill/SplitPreview.tsx';
 import { Button } from '../components/ui/Button.tsx';
 import { Input } from '../components/ui/Input.tsx';
 import { useBillDraft } from '../hooks/useBillDraft.ts';
 import { useCreateBill } from '../hooks/useBills.ts';
 import { useToast } from '../hooks/useToast.ts';
-import { buildSplitShareData } from '../utils/shareText.ts';
 import { calculateBillSplit, draftToCreateBillRequest } from '../utils/utils.ts';
 
 export default function NewBillPage() {
@@ -143,17 +141,7 @@ export default function NewBillPage() {
 
             {draft.products.length > 0 && (
                 <section className="panel">
-                    <div className="panel-header-row">
-                        <h2>Prévia da divisão</h2>
-
-                        {split.success && (
-                            <ShareButton
-                                data={buildSplitShareData(draft.title, split)}
-                                variant="ghost"
-                                size="sm"
-                            />
-                        )}
-                    </div>
+                    <h2>Prévia da divisão</h2>
 
                     <SplitPreview result={split} />
                 </section>
