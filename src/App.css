@@ -990,6 +990,68 @@
     border-top: 1px solid var(--border);
 }
 
+/* ---------- share ---------- */
+
+.header-summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header-row h2 {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.share-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.share-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--text-h);
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.share-option:hover {
+    border-color: var(--accent-border);
+    background: var(--accent-bg);
+}
+
+.share-option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
 /* ---------- auth ---------- */
 
 .auth-page {

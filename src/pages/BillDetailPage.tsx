@@ -1,9 +1,11 @@
 import { Link, useParams } from 'react-router-dom';
 import ParticipantRow from '../components/bill/ParticipantRow.tsx';
+import { ShareButton } from '../components/bill/ShareButton.tsx';
 import { Button } from '../components/ui/Button.tsx';
 import { Loading } from '../components/ui/Loading.tsx';
 import { useBill } from '../hooks/useBills.ts';
 import { useToast } from '../hooks/useToast.ts';
+import { buildBillShareData } from '../utils/shareText.ts';
 import { formatAmount, formatDate } from '../utils/utils.ts';
 
 export default function BillDetailPage() {
@@ -70,22 +72,26 @@ export default function BillDetailPage() {
                     <p className="page-subtitle">{formatDate(bill.created_at)}</p>
                 </div>
 
-                <div className="summary-tiles">
-                    <div className="summary-tile">
-                        <span>Total</span>
-                        <strong>R$ {formatAmount(bill.total_amount)}</strong>
-                    </div>
+                <div className="header-summary">
+                    <ShareButton data={buildBillShareData(bill)} />
 
-                    <div className="summary-tile">
-                        <span>Pagaram</span>
-                        <strong>
-                            {paidCount}/{bill.participants.length}
-                        </strong>
-                    </div>
+                    <div className="summary-tiles">
+                        <div className="summary-tile">
+                            <span>Total</span>
+                            <strong>R$ {formatAmount(bill.total_amount)}</strong>
+                        </div>
 
-                    <div className="summary-tile">
-                        <span>Falta receber</span>
-                        <strong>R$ {formatAmount(pendingAmount)}</strong>
+                        <div className="summary-tile">
+                            <span>Pagaram</span>
+                            <strong>
+                                {paidCount}/{bill.participants.length}
+                            </strong>
+                        </div>
+
+                        <div className="summary-tile">
+                            <span>Falta receber</span>
+                            <strong>R$ {formatAmount(pendingAmount)}</strong>
+                        </div>
                     </div>
                 </div>
             </div>
