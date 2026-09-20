@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import PersonForm from '../components/bill/PersonForm.tsx';
 import PersonCard from '../components/bill/PersonCard.tsx';
 import ProductCard from '../components/bill/ProductCard.tsx';
@@ -31,6 +31,7 @@ export default function NewBillPage() {
     const { createBill, isCreating } = useCreateBill();
     const navigate = useNavigate();
     const toast = useToast();
+    const [searchParams] = useSearchParams();
 
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
 
@@ -64,7 +65,7 @@ export default function NewBillPage() {
                 <div>
                     <h1>Nova conta</h1>
                     <p className="page-subtitle">
-                        Cadastre as pessoas e os itens, defina quem dividiu o quê e salve.
+                        Monte a conta em três passos rápidos.
                     </p>
                 </div>
 
@@ -79,7 +80,16 @@ export default function NewBillPage() {
                 </div>
             </div>
 
-            <section className="panel">
+            <div className="flow-steps" aria-label="Etapas da nova conta">
+                <span className="flow-step is-current"><b>1</b> Identifique</span>
+                <span className="flow-step"><b>2</b> Adicione pessoas e itens</span>
+                <span className="flow-step"><b>3</b> Confira e salve</span>
+            </div>
+
+            <section className="panel flow-card">
+                <div className="section-heading">
+                    <div><p className="eyebrow">Passo 1</p><h2>Como vamos chamar?</h2></div>
+                </div>
                 <Input
                     label="Título da conta"
                     value={draft.title}
@@ -91,7 +101,7 @@ export default function NewBillPage() {
 
             <div className="app-grid">
                 <section className="panel">
-                    <h2>Pessoas</h2>
+                    <div className="section-heading"><div><p className="eyebrow">Passo 2</p><h2>Pessoas</h2></div><span className="section-count">{draft.persons.length}</span></div>
 
                     <PersonForm onAddPerson={addPerson} />
 
@@ -114,9 +124,9 @@ export default function NewBillPage() {
 
                 <section className="panel">
                     <div className="panel-header-row">
-                        <h2>Itens</h2>
+                        <div><p className="eyebrow">Passo 2</p><h2>Itens</h2></div>
 
-                        <ReceiptScanButton onConfirm={addProducts} />
+                        <ReceiptScanButton onConfirm={addProducts} autoOpen={searchParams.get('scan') === '1'} />
                     </div>
 
                     <ProductForm onAddProduct={addProduct} />
@@ -150,7 +160,7 @@ export default function NewBillPage() {
             {draft.products.length > 0 && (
                 <section className="panel">
                     <div className="panel-header-row">
-                        <h2>Prévia da divisão</h2>
+                        <div><p className="eyebrow">Passo 3</p><h2>Confira a divisão</h2></div>
 
                         {split.success && (
                             <ShareButton

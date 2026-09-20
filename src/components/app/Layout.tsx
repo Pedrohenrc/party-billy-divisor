@@ -46,8 +46,24 @@ export function Layout() {
                 <Outlet />
             </main>
 
+            <Link className="scan-fab" to="/bills/new?scan=1" aria-label="Escanear nota fiscal">
+                <span className="scan-fab-icon">+</span>
+                <span>Escanear nota</span>
+            </Link>
+
+            <nav className="mobile-nav" aria-label="Navegação principal">
+                <NavLink to="/" end>
+                    <span className="mobile-nav-icon">⌂</span>
+                    <span>Início</span>
+                </NavLink>
+                <NavLink to="/bills/new">
+                    <span className="mobile-nav-icon">＋</span>
+                    <span>Nova conta</span>
+                </NavLink>
+            </nav>
+
             <footer className="app-footer">
-                <span>Billy · divisor de contas</span>
+                <span>Billy · divisão simples</span>
             </footer>
         </div>
     );

@@ -990,6 +990,336 @@
     border-top: 1px solid var(--border);
 }
 
+/* ---------- refreshed mobile-first layout ---------- */
+
+:root {
+    --text: #52606d;
+    --text-h: #17212b;
+    --text-soft: #87929d;
+    --bg: #f5f7f8;
+    --surface: #ffffff;
+    --surface-2: #f0f4f5;
+    --border: #dce5e8;
+    --accent: #147d7a;
+    --accent-strong: #0e615f;
+    --accent-contrast: #ffffff;
+    --accent-bg: #e2f2f1;
+    --accent-border: #a9d9d6;
+    --radius: 16px;
+    --radius-sm: 12px;
+}
+
+body {
+    background: var(--bg);
+}
+
+.app-topbar {
+    padding: 14px max(20px, calc((100vw - 1080px) / 2));
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.brand-name {
+    font-size: 21px;
+    letter-spacing: -0.04em;
+}
+
+.app-main {
+    padding-top: 28px;
+}
+
+.page {
+    gap: 20px;
+}
+
+.page-header {
+    align-items: center;
+}
+
+.page-header h1 {
+    letter-spacing: -0.04em;
+}
+
+.panel {
+    padding: 22px;
+    border: 0;
+    box-shadow: 0 4px 18px rgba(25, 53, 60, 0.06);
+}
+
+.eyebrow {
+    color: var(--accent-strong);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.section-heading,
+.panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.section-heading h2 {
+    margin-top: 2px;
+}
+
+.section-count {
+    display: grid;
+    place-items: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--accent-bg);
+    color: var(--accent-strong);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.bill-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+    width: fit-content;
+    background: var(--surface-2);
+    border-radius: 999px;
+}
+
+.bill-tabs button {
+    border: 0;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-soft);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.bill-tabs button.is-active {
+    background: var(--surface);
+    color: var(--text-h);
+    box-shadow: 0 2px 8px rgba(25, 53, 60, 0.08);
+    font-weight: 700;
+}
+
+.bill-tabs span {
+    margin-left: 4px;
+    color: var(--accent-strong);
+}
+
+.bill-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.section-empty {
+    padding: 34px 20px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--text-soft);
+    text-align: center;
+}
+
+.bill-tile {
+    border: 0;
+    box-shadow: 0 4px 18px rgba(25, 53, 60, 0.06);
+}
+
+.bill-tile:hover {
+    border: 0;
+    transform: translateY(-1px);
+}
+
+.flow-steps {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.flow-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--text-soft);
+    font-size: 12px;
+}
+
+.flow-step b {
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--text);
+    font-size: 11px;
+}
+
+.flow-step.is-current {
+    background: var(--accent-bg);
+    color: var(--accent-strong);
+    font-weight: 700;
+}
+
+.flow-step.is-current b {
+    background: var(--accent);
+    color: white;
+}
+
+.scan-fab {
+    position: fixed;
+    right: 22px;
+    bottom: 24px;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 16px 13px 12px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 10px 24px rgba(14, 97, 95, 0.3);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.scan-fab:hover {
+    color: white;
+    text-decoration: none;
+    background: var(--accent-strong);
+}
+
+.scan-fab-icon {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+@media (max-width: 720px) {
+    .app-topbar {
+        padding: 14px 16px;
+    }
+
+    .app-nav {
+        display: none;
+    }
+
+    .app-main {
+        padding: 22px 14px 104px;
+    }
+
+    .app-footer {
+        display: none;
+    }
+
+    .mobile-nav {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 25;
+        display: flex;
+        justify-content: space-around;
+        padding: 9px 20px max(9px, env(safe-area-inset-bottom));
+        background: rgba(255, 255, 255, 0.96);
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -5px 18px rgba(25, 53, 60, 0.06);
+    }
+
+    .mobile-nav a {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 90px;
+        color: var(--text-soft);
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .mobile-nav a.active {
+        color: var(--accent-strong);
+    }
+
+    .mobile-nav-icon {
+        font-size: 21px;
+        line-height: 22px;
+    }
+
+    .scan-fab {
+        right: 16px;
+        bottom: 78px;
+    }
+
+    .page-header-actions {
+        width: 100%;
+    }
+
+    .page-header-actions .btn {
+        flex: 1;
+    }
+
+    .page-header-actions .btn-lg {
+        flex: 2;
+    }
+
+    .panel {
+        padding: 17px;
+        border-radius: 14px;
+    }
+
+    .app-grid,
+    .detail-grid {
+        gap: 14px;
+    }
+
+    .bill-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .bill-tile {
+        padding: 16px;
+    }
+
+    .bill-tabs {
+        width: 100%;
+    }
+
+    .bill-tabs button {
+        flex: 1;
+    }
+
+    .toast-container {
+        right: 12px;
+        bottom: 76px;
+        left: 12px;
+    }
+
+    .toast {
+        min-width: 0;
+        max-width: none;
+    }
+}
+
 /* ---------- receipt scan ---------- */
 
 .visually-hidden {

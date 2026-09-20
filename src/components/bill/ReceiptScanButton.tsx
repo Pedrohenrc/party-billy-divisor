@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { billService } from '../../services/bill.service.ts';
 import { useToast } from '../../hooks/useToast.ts';
@@ -19,14 +19,19 @@ interface ReviewItem {
 
 interface ReceiptScanButtonProps {
     onConfirm: (items: { name: string; unitPrice: number; quantity: number }[]) => void;
+    autoOpen?: boolean;
 }
 
-export default function ReceiptScanButton({ onConfirm }: ReceiptScanButtonProps) {
+export default function ReceiptScanButton({ onConfirm, autoOpen = false }: ReceiptScanButtonProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const toast = useToast();
 
     const [isScanning, setIsScanning] = useState(false);
     const [reviewItems, setReviewItems] = useState<ReviewItem[] | null>(null);
+
+    useEffect(() => {
+        if (autoOpen) inputRef.current?.click();
+    }, [autoOpen]);
 
     function handleClick() {
         inputRef.current?.click();
