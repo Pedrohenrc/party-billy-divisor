@@ -1,7 +1,8 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
 import { Button } from '../ui/Button.tsx';
+import { HomeIcon, ListIcon, LogoutIcon } from '../ui/icons.tsx';
+import { QuickScanFab } from './QuickScanFab.tsx';
 
 export function Layout() {
     const { user, logout } = useAuth();
@@ -18,10 +19,14 @@ export function Layout() {
         <div className="app-shell">
             <header className="app-topbar">
                 <Link className="brand" to="/">
-                    <span className="brand-name">Billy</span>
+                    <span className="brand-mark" aria-hidden="true">
+                        <span className="brand-mark-half brand-mark-a" />
+                        <span className="brand-mark-half brand-mark-b" />
+                    </span>
+                    <span className="brand-name">Racha</span>
                 </Link>
 
-                <nav className="app-nav">
+                <nav className="app-nav app-nav-desktop">
                     <NavLink to="/" end>
                         Minhas contas
                     </NavLink>
@@ -36,7 +41,12 @@ export function Layout() {
 
                     <span className="app-user-name">{user?.name ?? user?.email}</span>
 
-                    <Button variant="ghost" size="sm" onClick={handleLogout}>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleLogout}
+                        className="app-logout-desktop"
+                    >
                         Sair
                     </Button>
                 </div>
@@ -46,9 +56,28 @@ export function Layout() {
                 <Outlet />
             </main>
 
-            <footer className="app-footer">
-                <span>Billy · divisor de contas</span>
-            </footer>
+            <QuickScanFab />
+
+            <nav className="app-bottom-nav" aria-label="Navegação principal">
+                <NavLink to="/" end className="app-bottom-nav-item">
+                    <HomeIcon size={22} />
+                    <span>Início</span>
+                </NavLink>
+
+                <NavLink to="/bills/new" className="app-bottom-nav-item">
+                    <ListIcon size={22} />
+                    <span>Nova conta</span>
+                </NavLink>
+
+                <button
+                    type="button"
+                    className="app-bottom-nav-item"
+                    onClick={handleLogout}
+                >
+                    <LogoutIcon size={22} />
+                    <span>Sair</span>
+                </button>
+            </nav>
         </div>
     );
 }

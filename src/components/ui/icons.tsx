@@ -56,3 +56,60 @@ export function ReceiptScanIcon(props: IconProps) {
         </svg>
     );
 }
+
+export function HomeIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <path d="M4 11.5 12 4l8 7.5" />
+            <path d="M6 10v9.5a.5.5 0 0 0 .5.5H10v-5a2 2 0 0 1 4 0v5h3.5a.5.5 0 0 0 .5-.5V10" />
+        </svg>
+    );
+}
+
+export function ListIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <rect x="4" y="4" width="16" height="16" rx="3" />
+            <line x1="8" y1="9" x2="16" y2="9" />
+            <line x1="8" y1="13" x2="16" y2="13" />
+            <line x1="8" y1="17" x2="13" y2="17" />
+        </svg>
+    );
+}
+
+export function LogoutIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <path d="M14 8V6.5A2.5 2.5 0 0 0 11.5 4h-5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20h5a2.5 2.5 0 0 0 2.5-2.5V16" />
+            <line x1="20" y1="12" x2="10.5" y2="12" />
+            <path d="m17 8.5 3.5 3.5-3.5 3.5" />
+        </svg>
+    );
+}
+
+export function PlusIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+    );
+}
+
+export function CheckCircleIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <circle cx="12" cy="12" r="8.5" />
+            <path d="m8.5 12.3 2.4 2.4 4.6-5.4" />
+        </svg>
+    );
+}
+
+export function ClockIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <circle cx="12" cy="12" r="8.5" />
+            <path d="M12 7.5V12l3 2" />
+        </svg>
+    );
+}

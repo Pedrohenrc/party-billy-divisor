@@ -13,7 +13,7 @@ import { useBillDraft } from '../hooks/useBillDraft.ts';
 import { useCreateBill } from '../hooks/useBills.ts';
 import { useToast } from '../hooks/useToast.ts';
 import { buildSplitShareData } from '../utils/shareText.ts';
-import { calculateBillSplit, draftToCreateBillRequest } from '../utils/utils.ts';
+import { calculateBillSplit, draftToCreateBillRequest, formatMoney } from '../utils/utils.ts';
 
 export default function NewBillPage() {
     const {
@@ -44,7 +44,7 @@ export default function NewBillPage() {
 
     async function handleSave() {
         if (!canSave) {
-            toast.error('Informe um título e vincule pelo menos uma pessoa a cada item');
+            toast.error('Falta um título e vincular pelo menos uma pessoa a cada item');
             return;
         }
 
@@ -59,16 +59,16 @@ export default function NewBillPage() {
     }
 
     return (
-        <div className="page">
+        <div className="page has-save-bar">
             <div className="page-header">
                 <div>
                     <h1>Nova conta</h1>
                     <p className="page-subtitle">
-                        Cadastre as pessoas e os itens, defina quem dividiu o quê e salve.
+                        Escaneie a nota ou cadastre na mão, junte a galera e defina quem ficou com o quê.
                     </p>
                 </div>
 
-                <div className="page-header-actions">
+                <div className="page-header-actions hide-on-mobile">
                     <Button variant="ghost" onClick={reset} disabled={isCreating}>
                         Limpar
                     </Button>
@@ -80,77 +80,91 @@ export default function NewBillPage() {
             </div>
 
             <section className="panel">
+                <div className="panel-title">
+                    <span className="step-badge">1</span>
+                    <span>Título da conta</span>
+                </div>
+
                 <Input
-                    label="Título da conta"
                     value={draft.title}
                     onChange={(event) => setTitle(event.target.value)}
                     placeholder="Ex: Churrasco de sábado"
+                    aria-label="Título da conta"
                     maxLength={255}
                 />
             </section>
 
-            <div className="app-grid">
-                <section className="panel">
-                    <h2>Pessoas</h2>
-
-                    <PersonForm onAddPerson={addPerson} />
-
-                    <div className="card-list">
-                        {draft.persons.length === 0 && (
-                            <p className="panel-empty">Ninguém cadastrado ainda.</p>
-                        )}
-
-                        {draft.persons.map((person) => (
-                            <PersonCard
-                                key={person.id}
-                                person={person}
-                                products={draft.products}
-                                relations={draft.relations}
-                                onRemove={removePerson}
-                            />
-                        ))}
-                    </div>
-                </section>
-
-                <section className="panel">
-                    <div className="panel-header-row">
-                        <h2>Itens</h2>
-
-                        <ReceiptScanButton onConfirm={addProducts} />
+            <section className="panel">
+                <div className="panel-header-row">
+                    <div className="panel-title">
+                        <span className="step-badge">2</span>
+                        <span>Itens da conta</span>
                     </div>
 
-                    <ProductForm onAddProduct={addProduct} />
+                    <ReceiptScanButton onConfirm={addProducts} />
+                </div>
 
-                    <div className="card-list">
-                        {draft.products.length === 0 && (
-                            <p className="panel-empty">Nenhum item cadastrado ainda.</p>
-                        )}
+                <ProductForm onAddProduct={addProduct} />
 
-                        {draft.products.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                persons={draft.persons}
-                                relations={draft.relations}
-                                isAddingPeople={selectedProductId === product.id}
-                                onToggleAddPeople={(productId) =>
-                                    setSelectedProductId((current) =>
-                                        current === productId ? null : productId
-                                    )
-                                }
-                                onCloseAddPeople={() => setSelectedProductId(null)}
-                                onConfirmParticipants={setProductParticipants}
-                                onRemove={removeProduct}
-                            />
-                        ))}
-                    </div>
-                </section>
-            </div>
+                <div className="card-list">
+                    {draft.products.length === 0 && (
+                        <p className="panel-empty">
+                            Nenhum item ainda. Fotografe a nota ou adicione um item acima.
+                        </p>
+                    )}
+
+                    {draft.products.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            persons={draft.persons}
+                            relations={draft.relations}
+                            isAddingPeople={selectedProductId === product.id}
+                            onToggleAddPeople={(productId) =>
+                                setSelectedProductId((current) =>
+                                    current === productId ? null : productId
+                                )
+                            }
+                            onCloseAddPeople={() => setSelectedProductId(null)}
+                            onConfirmParticipants={setProductParticipants}
+                            onRemove={removeProduct}
+                        />
+                    ))}
+                </div>
+            </section>
+
+            <section className="panel">
+                <div className="panel-title">
+                    <span className="step-badge">3</span>
+                    <span>Quem estava junto</span>
+                </div>
+
+                <PersonForm onAddPerson={addPerson} />
+
+                <div className="card-list">
+                    {draft.persons.length === 0 && (
+                        <p className="panel-empty">Ninguém cadastrado ainda.</p>
+                    )}
+
+                    {draft.persons.map((person) => (
+                        <PersonCard
+                            key={person.id}
+                            person={person}
+                            products={draft.products}
+                            relations={draft.relations}
+                            onRemove={removePerson}
+                        />
+                    ))}
+                </div>
+            </section>
 
             {draft.products.length > 0 && (
                 <section className="panel">
                     <div className="panel-header-row">
-                        <h2>Prévia da divisão</h2>
+                        <div className="panel-title">
+                            <span className="step-badge">4</span>
+                            <span>Prévia da divisão</span>
+                        </div>
 
                         {split.success && (
                             <ShareButton
@@ -164,6 +178,23 @@ export default function NewBillPage() {
                     <SplitPreview result={split} />
                 </section>
             )}
+
+            <div className="save-bar">
+                <div className="save-bar-info">
+                    <span>Total</span>
+                    <strong>R$ {split.success ? formatMoney(split.totalBill) : '0,00'}</strong>
+                </div>
+
+                <div className="save-bar-actions">
+                    <Button variant="ghost" onClick={reset} disabled={isCreating} size="sm">
+                        Limpar
+                    </Button>
+
+                    <Button onClick={handleSave} loading={isCreating} disabled={!canSave}>
+                        Salvar conta
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }

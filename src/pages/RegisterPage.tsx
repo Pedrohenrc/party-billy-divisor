@@ -42,9 +42,12 @@ export default function RegisterPage() {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-brand">
-                    <span className="brand-mark">B</span>
+                    <span className="brand-mark" aria-hidden="true">
+                        <span className="brand-mark-half brand-mark-a" />
+                        <span className="brand-mark-half brand-mark-b" />
+                    </span>
                     <h1>Criar conta</h1>
-                    <p>Guarde suas contas e acompanhe os pagamentos.</p>
+                    <p>Guarde suas contas e acompanhe quem ainda está devendo.</p>
                 </div>
 
                 <form className="stacked-form" onSubmit={handleSubmit}>

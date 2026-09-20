@@ -37,8 +37,12 @@ export default function LoginPage() {
         <div className="auth-page">
             <div className="auth-card">
                 <div className="auth-brand">
-                    <h1>Billy</h1>
-                    <p>Divida a conta, acompanhe quem já pagou.</p>
+                    <span className="brand-mark" aria-hidden="true">
+                        <span className="brand-mark-half brand-mark-a" />
+                        <span className="brand-mark-half brand-mark-b" />
+                    </span>
+                    <h1>Racha</h1>
+                    <p>Fotografe a nota, divida com a galera e veja quem já acertou.</p>
                 </div>
 
                 <form className="stacked-form" onSubmit={handleSubmit}>
@@ -68,7 +72,7 @@ export default function LoginPage() {
                 </form>
 
                 <p className="auth-footer">
-                    Não tem conta? <Link to="/register">Criar agora</Link>
+                    Ainda não tem conta? <Link to="/register">Criar agora</Link>
                 </p>
             </div>
         </div>
