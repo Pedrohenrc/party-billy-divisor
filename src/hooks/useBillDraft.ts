@@ -64,6 +64,28 @@ export function useBillDraft() {
         []
     );
 
+    const addProducts = useCallback(
+        (items: { name: string; unitPrice: number; quantity: number }[]) => {
+            if (items.length === 0) {
+                return;
+            }
+
+            setDraft((current) => {
+                let nextId = getNextId(current.products);
+
+                const newProducts = items.map((item) => ({
+                    id: nextId++,
+                    name: item.name,
+                    unitPrice: item.unitPrice,
+                    quantity: item.quantity,
+                }));
+
+                return { ...current, products: [...current.products, ...newProducts] };
+            });
+        },
+        []
+    );
+
     const removeProduct = useCallback((productId: number) => {
         setDraft((current) => ({
             ...current,
@@ -93,6 +115,7 @@ export function useBillDraft() {
         addPerson,
         removePerson,
         addProduct,
+        addProducts,
         removeProduct,
         setProductParticipants,
         reset,

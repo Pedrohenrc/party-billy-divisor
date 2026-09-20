@@ -47,3 +47,9 @@ export interface CreateBillRequest {
 export interface SetPaymentRequest {
     paid: boolean;
 }
+
+export interface ScannedProduct {
+    name: string;
+    quantity: number;
+    unit_price: string;
+}

@@ -4,6 +4,7 @@ import type {
     BillParticipant,
     BillSummary,
     CreateBillRequest,
+    ScannedProduct,
     SetPaymentRequest,
 } from '../types/bill.ts';
 
@@ -40,5 +41,18 @@ export const billService = {
         );
 
         return response.data!;
+    },
+
+    scanReceipt: async (file: File): Promise<ScannedProduct[]> => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await httpClient.postForm<ScannedProduct[]>(
+            '/receipts/scan',
+            formData,
+            { skipToast: true }
+        );
+
+        return response.data ?? [];
     },
 };

@@ -4,6 +4,7 @@ import PersonForm from '../components/bill/PersonForm.tsx';
 import PersonCard from '../components/bill/PersonCard.tsx';
 import ProductCard from '../components/bill/ProductCard.tsx';
 import ProductForm from '../components/bill/ProductForm.tsx';
+import ReceiptScanButton from '../components/bill/ReceiptScanButton.tsx';
 import { ShareButton } from '../components/bill/ShareButton.tsx';
 import SplitPreview from '../components/bill/SplitPreview.tsx';
 import { Button } from '../components/ui/Button.tsx';
@@ -21,6 +22,7 @@ export default function NewBillPage() {
         addPerson,
         removePerson,
         addProduct,
+        addProducts,
         removeProduct,
         setProductParticipants,
         reset,
@@ -111,7 +113,11 @@ export default function NewBillPage() {
                 </section>
 
                 <section className="panel">
-                    <h2>Itens</h2>
+                    <div className="panel-header-row">
+                        <h2>Itens</h2>
+
+                        <ReceiptScanButton onConfirm={addProducts} />
+                    </div>
 
                     <ProductForm onAddProduct={addProduct} />
 

@@ -56,8 +56,9 @@ class HttpClient {
         const accessToken = tokenManager.getAccessToken();
 
         const requestHeaders = new Headers(headers as HeadersInit);
-
-        if (!requestHeaders.has('Content-Type')) {
+        const isFormData = restConfig.body instanceof FormData;
+        
+        if (!requestHeaders.has('Content-Type') && !isFormData) {
             requestHeaders.set('Content-Type', 'application/json');
         }
 
@@ -138,6 +139,18 @@ class HttpClient {
             ...config,
             method: 'POST',
             body: body ? JSON.stringify(body) : undefined,
+        });
+    }
+
+    async postForm<T>(
+        endpoint: string,
+        formData: FormData,
+        config?: RequestConfig
+    ): Promise<ApiResponse<T>> {
+        return this.request<T>(endpoint, {
+            ...config,
+            method: 'POST',
+            body: formData,
         });
     }
 

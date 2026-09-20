@@ -45,3 +45,14 @@ export function CopyIcon(props: IconProps) {
         </svg>
     );
 }
+
+export function ReceiptScanIcon(props: IconProps) {
+    return (
+        <svg {...createIconProps(props)}>
+            <path d="M6 3h12v18l-2.5-1.6L13 21l-2.5-1.6L8 21l-2-1.6z" />
+            <line x1="9" y1="8" x2="15" y2="8" />
+            <line x1="9" y1="12" x2="15" y2="12" />
+            <line x1="9" y1="16" x2="12.5" y2="16" />
+        </svg>
+    );
+}
