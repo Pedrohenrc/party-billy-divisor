@@ -112,7 +112,7 @@ export function formatShareText(data: ShareBillData): string {
     });
 
     lines.push(separator);
-    lines.push('_Gerado com Party Billy Divisor_');
+    lines.push('_Gerado com https://party-billy-divisor.vercel.app/_');
 
     return lines.join('\n');
 }
