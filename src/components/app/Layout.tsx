@@ -1,11 +1,21 @@
+import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth.ts';
-import { Button } from '../ui/Button.tsx';
 
 export function Layout() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+        const savedTheme = window.localStorage.getItem('billy-theme');
+        return savedTheme === 'dark' ? 'dark' : 'light';
+    });
+
+    useEffect(() => {
+        document.documentElement.dataset.theme = theme;
+        window.localStorage.setItem('billy-theme', theme);
+    }, [theme]);
 
     function handleLogout() {
         logout();
@@ -29,16 +39,38 @@ export function Layout() {
                     <NavLink to="/bills/new">Nova conta</NavLink>
                 </nav>
 
-                <div className="app-user">
-                    <span className="avatar" title={user?.email ?? ''}>
-                        {initial}
-                    </span>
+                <div className="profile-menu">
+                    <button
+                        className="profile-trigger"
+                        type="button"
+                        aria-expanded={isProfileOpen}
+                        onClick={() => setIsProfileOpen((current) => !current)}
+                    >
+                        <span className="avatar" title={user?.email ?? ''}>{initial}</span>
+                        <span className="app-user-name">{user?.name ?? user?.email}</span>
+                        <span className="profile-chevron" aria-hidden="true">⌄</span>
+                    </button>
 
-                    <span className="app-user-name">{user?.name ?? user?.email}</span>
-
-                    <Button variant="ghost" size="sm" onClick={handleLogout}>
-                        Sair
-                    </Button>
+                    {isProfileOpen && (
+                        <div className="profile-dropdown">
+                            <div className="profile-dropdown-user">
+                                <strong>{user?.name ?? user?.email}</strong>
+                                <span>{user?.email}</span>
+                            </div>
+                            <button
+                                className="profile-dropdown-action"
+                                type="button"
+                                onClick={() => setTheme((current) => current === 'light' ? 'dark' : 'light')}
+                            >
+                                <span>{theme === 'light' ? '☾' : '☀'}</span>
+                                {theme === 'light' ? 'Modo escuro' : 'Modo claro'}
+                            </button>
+                            <button className="profile-dropdown-action is-danger" type="button" onClick={handleLogout}>
+                                <span>↪</span>
+                                Sair
+                            </button>
+                        </div>
+                    )}
                 </div>
             </header>
 

@@ -36,6 +36,11 @@ export default function NewBillPage() {
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
 
     const split = calculateBillSplit(draft);
+    const currentStep = !draft.title.trim()
+        ? 1
+        : draft.persons.length === 0 || draft.products.length === 0 || !split.success
+          ? 2
+          : 3;
 
     const canSave =
         draft.title.trim().length > 0 &&
@@ -81,15 +86,19 @@ export default function NewBillPage() {
             </div>
 
             <div className="flow-steps" aria-label="Etapas da nova conta">
-                <span className="flow-step is-current"><b>1</b> Identifique</span>
-                <span className="flow-step"><b>2</b> Adicione pessoas e itens</span>
-                <span className="flow-step"><b>3</b> Confira e salve</span>
+                <span className={`flow-step ${currentStep >= 1 ? 'is-done' : ''} ${currentStep === 1 ? 'is-current' : ''}`}>
+                    <b>1</b><span><small>Passo 1</small>Identifique a conta</span>
+                </span>
+                <span className={`flow-step ${currentStep >= 2 ? 'is-done' : ''} ${currentStep === 2 ? 'is-current' : ''}`}>
+                    <b>2</b><span><small>Passo 2</small>Pessoas e itens</span>
+                </span>
+                <span className={`flow-step ${currentStep === 3 ? 'is-done is-current' : ''}`}>
+                    <b>3</b><span><small>Passo 3</small>Confira e salve</span>
+                </span>
             </div>
 
             <section className="panel flow-card">
-                <div className="section-heading">
-                    <div><p className="eyebrow">Passo 1</p><h2>Como vamos chamar?</h2></div>
-                </div>
+                <div className="section-heading"><h2>Como vamos chamar?</h2></div>
                 <Input
                     label="Título da conta"
                     value={draft.title}
@@ -101,7 +110,7 @@ export default function NewBillPage() {
 
             <div className="app-grid">
                 <section className="panel">
-                    <div className="section-heading"><div><p className="eyebrow">Passo 2</p><h2>Pessoas</h2></div><span className="section-count">{draft.persons.length}</span></div>
+                    <div className="section-heading"><h2>Pessoas</h2><span className="section-count">{draft.persons.length}</span></div>
 
                     <PersonForm onAddPerson={addPerson} />
 
@@ -124,7 +133,7 @@ export default function NewBillPage() {
 
                 <section className="panel">
                     <div className="panel-header-row">
-                        <div><p className="eyebrow">Passo 2</p><h2>Itens</h2></div>
+                        <h2>Itens</h2>
 
                         <ReceiptScanButton onConfirm={addProducts} autoOpen={searchParams.get('scan') === '1'} />
                     </div>
@@ -160,7 +169,7 @@ export default function NewBillPage() {
             {draft.products.length > 0 && (
                 <section className="panel">
                     <div className="panel-header-row">
-                        <div><p className="eyebrow">Passo 3</p><h2>Confira a divisão</h2></div>
+                        <h2>Confira a divisão</h2>
 
                         {split.success && (
                             <ShareButton
