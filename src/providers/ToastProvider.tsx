@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { ToastContext } from './toast-context.ts';
 import { Toast } from '../components/ui/Toast.tsx';
-import type { ToastType } from '../components/ui/Toast.tsx';
+import type { ToastAction, ToastType } from '../components/ui/Toast.tsx';
 import { setToastCallback } from '../utils/http-client.ts';
 
 interface ToastData {
@@ -10,6 +10,7 @@ interface ToastData {
     message: string;
     type: ToastType;
     duration?: number;
+    action?: ToastAction;
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -20,10 +21,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     }, []);
 
     const showToast = useCallback(
-        (message: string, type: ToastType, duration: number = 4000) => {
+        (message: string, type: ToastType, duration: number = 4000, action?: ToastAction) => {
             const id = Math.random().toString(36).substring(2, 9);
 
-            setToasts((current) => [...current, { id, message, type, duration }]);
+            setToasts((current) => [...current, { id, message, type, duration, action }]);
         },
         []
     );
@@ -34,7 +35,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     );
 
     const error = useCallback(
-        (message: string, duration?: number) => showToast(message, 'error', duration),
+        (message: string, duration?: number, action?: ToastAction) =>
+            showToast(message, 'error', duration, action),
         [showToast]
     );
 
@@ -59,6 +61,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                         message={toast.message}
                         type={toast.type}
                         duration={toast.duration}
+                        action={toast.action}
                         onClose={() => removeToast(toast.id)}
                     />
                 ))}

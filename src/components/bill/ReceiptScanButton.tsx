@@ -1,13 +1,11 @@
 import { useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { billService } from '../../services/bill.service.ts';
+import { useReceiptScan } from '../../hooks/useReceiptScan.ts';
 import { useToast } from '../../hooks/useToast.ts';
 import { Button } from '../ui/Button.tsx';
 import { Modal } from '../ui/Modal.tsx';
 import { ReceiptScanIcon } from '../ui/icons.tsx';
 import { formatMoney } from '../../utils/utils.ts';
-
-const MAX_IMAGE_SIZE_BYTES = 8 * 1024 * 1024;
 
 interface ReviewItem {
     id: number;
@@ -25,54 +23,31 @@ export default function ReceiptScanButton({ onConfirm }: ReceiptScanButtonProps)
     const inputRef = useRef<HTMLInputElement>(null);
     const toast = useToast();
 
-    const [isScanning, setIsScanning] = useState(false);
     const [reviewItems, setReviewItems] = useState<ReviewItem[] | null>(null);
+
+    const { isScanning, scan } = useReceiptScan((scanned) => {
+        setReviewItems(
+            scanned.map((item, index) => ({
+                id: index,
+                name: item.name,
+                quantity: item.quantity,
+                unitPrice: Number(item.unit_price),
+                selected: true,
+            }))
+        );
+    });
 
     function handleClick() {
         inputRef.current?.click();
     }
 
-    async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0];
 
         event.target.value = '';
 
-        if (!file) {
-            return;
-        }
-
-        if (!file.type.startsWith('image/')) {
-            toast.error('Envie uma imagem (foto ou print da nota fiscal)');
-            return;
-        }
-
-        if (file.size > MAX_IMAGE_SIZE_BYTES) {
-            toast.error('Imagem muito grande (máximo 8MB)');
-            return;
-        }
-
-        setIsScanning(true);
-
-        try {
-            const scanned = await billService.scanReceipt(file);
-
-            setReviewItems(
-                scanned.map((item, index) => ({
-                    id: index,
-                    name: item.name,
-                    quantity: item.quantity,
-                    unitPrice: Number(item.unit_price),
-                    selected: true,
-                }))
-            );
-        } catch (error) {
-            toast.error(
-                error instanceof Error
-                    ? error.message
-                    : 'Não foi possível ler a nota fiscal'
-            );
-        } finally {
-            setIsScanning(false);
+        if (file) {
+            void scan(file);
         }
     }
 

@@ -16,6 +16,38 @@ export interface HttpError extends Error {
     validation?: Record<string, string> | null;
 }
 
+const SERVICE_UNAVAILABLE_MESSAGE =
+    'Serviço temporariamente indisponível. Tente novamente em instantes.';
+
+function fallbackMessage(status: number): string {
+    if (status === 429) {
+        return 'Muitas tentativas seguidas. Aguarde um instante e tente de novo.';
+    }
+
+    if (status === 502 || status === 503 || status === 504) {
+        return SERVICE_UNAVAILABLE_MESSAGE;
+    }
+
+    return 'Ocorreu um erro inesperado';
+}
+
+export function isRetryableError(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+        return false;
+    }
+
+    const { status, code } = error as HttpError;
+
+    return (
+        code === 'NETWORK_ERROR' ||
+        code === 'EXTERNAL_SERVICE_UNAVAILABLE' ||
+        status === 429 ||
+        status === 502 ||
+        status === 503 ||
+        status === 504
+    );
+}
+
 type ToastCallback = (message: string, type: 'success' | 'error') => void;
 
 let toastCallback: ToastCallback | null = null;
@@ -78,7 +110,7 @@ class HttpClient {
                 toastCallback('Erro de conexão. Tente novamente.', 'error');
             }
 
-            throw buildError('Erro de conexão. Tente novamente.');
+            throw buildError('Erro de conexão. Tente novamente.', undefined, 'NETWORK_ERROR');
         }
 
         // A API não tem refresh token: sessão expirada = voltar para o login.
@@ -101,7 +133,7 @@ class HttpClient {
         }
 
         if (!response.ok) {
-            const errorMessage = data?.error || 'Ocorreu um erro inesperado';
+            const errorMessage = data?.error || fallbackMessage(response.status);
 
             const validation =
                 data?.code === 'VALIDATION_ERROR' && data.data

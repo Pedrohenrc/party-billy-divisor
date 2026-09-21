@@ -1195,6 +1195,16 @@
     color: var(--text-h);
 }
 
+.toast-action {
+    border: none;
+    background: transparent;
+    color: var(--accent-strong);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
 .toast-close {
     border: none;
     background: transparent;
